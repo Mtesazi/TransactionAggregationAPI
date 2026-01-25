@@ -105,8 +105,16 @@ src/
 │   │   ├── datasource/                        # Mock data sources
 │   │   │   ├── MockBankSourceA.java
 │   │   │   └── MockBankSourceB.java
-│   │   ├── dto/                               # Data Transfer Objects
-│   │   │   └── TransactionDto.java
+│   │   ├── dto/                               # Data Transfer Objects (8 DTOs)
+│   │   │   ├── AggregatedSummaryDto.java
+│   │   │   ├── ApiResponseDto.java
+│   │   │   ├── CategorySummaryDto.java
+│   │   │   ├── CustomerSummaryDto.java
+│   │   │   ├── ErrorResponseDto.java
+│   │   │   ├── TransactionCreateDto.java
+│   │   │   ├── TransactionDto.java
+│   │   │   ├── TransactionFilterDto.java
+│   │   │   └── TransactionUpdateDto.java
 │   │   ├── exception/                         # Custom exceptions
 │   │   │   └── ResourceNotFoundException.java
 │   │   ├── mapper/                            # Entity-DTO mappers
@@ -143,6 +151,23 @@ src/
             ├── CategorizationServiceImplTest.java
             └── TransactionServiceImplTest.java
 ```
+
+## Data Transfer Objects (DTOs)
+
+The API uses DTOs for clean separation between API layer and domain layer:
+
+### Request DTOs
+- **TransactionCreateDto** - For creating new transactions (excludes auto-generated ID)
+- **TransactionUpdateDto** - For updating existing transactions
+- **TransactionFilterDto** - For filtering transactions by multiple criteria
+
+### Response DTOs
+- **TransactionDto** - Standard transaction response
+- **AggregatedSummaryDto** - Aggregated summary with totals and category breakdowns
+- **CategorySummaryDto** - Category-specific statistics
+- **CustomerSummaryDto** - Customer-specific summaries with recent transactions
+- **ErrorResponseDto** - Standardized error responses
+- **ApiResponseDto<T>** - Generic wrapper for consistent API responses
 
 ## Transaction Categories
 
