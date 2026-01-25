@@ -130,6 +130,9 @@ src/
 │   │   │   ├── CategorizationService.java
 │   │   │   ├── TransactionService.java
 │   │   │   └── impl/                          # Service implementations
+│   │   │       ├── AggregationServiceImpl.java
+│   │   │       ├── CategorizationServiceImpl.java
+│   │   │       └── TransactionServiceImpl.java
 │   │   └── swagger/                           # Swagger configuration
 │   │       └── swaggerConfig.java
 │   └── resources/
