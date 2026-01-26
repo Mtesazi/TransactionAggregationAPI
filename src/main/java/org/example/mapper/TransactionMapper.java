@@ -1,30 +1,49 @@
+// java
 package org.example.mapper;
 
 import org.example.dto.TransactionDto;
 import org.example.model.Transaction;
 import org.example.model.TransactionCategory;
 
+public final class TransactionMapper {
 
-public class TransactionMapper {
+    private TransactionMapper() {
+    }
 
     public static TransactionDto mapToDto(Transaction transaction) {
-           return new TransactionDto(
+        if (transaction == null) {
+            return null;
+        }
+
+        String category = transaction.getCategory() != null ? transaction.getCategory().name() : null;
+
+        return new TransactionDto(
                 transaction.getId(),
                 transaction.getCustomerId(),
                 transaction.getDescription(),
                 transaction.getAmount(),
                 transaction.getDate(),
-                transaction.getCategory() != null ? transaction.getCategory().name() : null
+                category
         );
     }
 
-
     public static Transaction mapToEntity(TransactionDto dto) {
+        if (dto == null) {
+            return null;
+        }
 
         TransactionCategory category = null;
-        if (dto.getCategory() != null && !dto.getCategory().isBlank()) {
-            category = TransactionCategory.valueOf(dto.getCategory().toUpperCase());
+        String raw = dto.getCategory();
+        if (raw != null) {
+            raw = raw.trim();
+            if (!raw.isBlank()) {
+                try {
+                    category = TransactionCategory.valueOf(raw.toUpperCase());
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
         }
+
         return new Transaction(
                 dto.getId(),
                 dto.getCustomerId(),
