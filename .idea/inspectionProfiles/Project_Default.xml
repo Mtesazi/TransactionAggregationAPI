@@ -23,6 +23,7 @@
           <option value="TransactionAggregationAPI" />
           <option value="TransactionAggregationAPI" />
           <option value="transaction-aggregation-api" />
+          <option value="transaction-aggregation-api" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -42,6 +43,7 @@
           <option value="org.springframework:spring-context:6.1.1" />
           <option value="org.springframework:spring-core:6.1.1" />
           <option value="org.springframework.boot:spring-boot:3.2.0" />
+          <option value="org.apache.tomcat.embed:tomcat-embed-core:10.1.16" />
         </list>
       </option>
       <option name="ignoredReasons">
@@ -49,6 +51,7 @@
           <option value="Not exploitable" />
           <option value="Not exploitable" />
           <option value="Fixed in branch" />
+          <option value="Not exploitable" />
           <option value="Not exploitable" />
           <option value="Not exploitable" />
           <option value="Not exploitable" />
