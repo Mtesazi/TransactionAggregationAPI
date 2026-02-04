@@ -5,188 +5,167 @@ A Spring Boot REST API for managing, categorizing, and aggregating financial tra
 ## Overview
 
 This application provides endpoints to:
-- Manage complete CRUD operations for financial transactions
+- Manage CRUD operations for financial transactions
 - Categorize transactions by type (Food, Travel, Shopping, etc.)
 - Aggregate transaction data by customer and category
-- Generate comprehensive summary reports with totals per category
-- Track and analyze spending patterns
+- Produce summary reports with totals per category
+
+## Quick summary
+
+- Framework: Spring Boot 3.2
+- Project build: Maven
+- Java: 17 or later (project is compiled with `--release 17`)
+- Test tooling: JUnit 5, Mockito, MockMvc
+
+> Note: Spring Boot 3 requires Java 17+. If your machine has a newer JDK (for example JDK 21), Maven should be run with that JDK set in `JAVA_HOME` or your IDE run configuration.
 
 ## Features
 
-✅ **Full CRUD Operations** - Create, Read, Update, Delete transactions  
-✅ **Transaction Categorization** - Automatic and manual categorization support  
-✅ **Data Aggregation** - Summarize transactions by customer and category  
-✅ **RESTful API** - Well-structured REST endpoints  
-✅ **API Documentation** - Interactive Swagger UI documentation  
-✅ **Comprehensive Testing** - 98 unit tests with complete coverage  
-✅ **In-Memory Database** - H2 database for quick development and testing  
+- Full CRUD endpoints for transactions
+- Transaction categorization endpoint
+- Aggregation endpoints (per-customer, summary totals)
+- DTO-based API surface (clean separation between API layer and domain models)
+- Comprehensive unit tests (controllers, services, models, repository)
+- In-memory H2 database for local development
+- OpenAPI / Swagger UI for interactive API documentation
 
 ## Technologies Used
 
-- **Java 21** (with preview features enabled)
-- **Spring Boot 3.2.0**
-- **Spring Data JPA** (data persistence)
-- **H2 Database** (in-memory)
-- **Maven** (build tool)
-- **Lombok** (code generation)
-- **SpringDoc OpenAPI 2.3.0** (API documentation)
-- **JUnit 5** (testing framework)
-- **Mockito** (mocking framework)
-- **MockMvc** (Spring MVC testing)
+- Java 17+ (project compiled with release 17)
+- Spring Boot 3.2.0
+- Spring Data JPA
+- H2 Database (in-memory)
+- Maven
+- Lombok
+- SpringDoc OpenAPI
+- JUnit 5, Mockito, MockMvc
 
 ## Prerequisites
 
-- Java 21 or higher
+- Java 17 or higher installed
 - Maven 3.6+
 
-## Getting Started
+Verify Java version:
 
-### Build the Project
+```powershell
+java -version
+```
 
-```bash
+If Maven picks the wrong JDK, set `JAVA_HOME` for your session (PowerShell example):
+
+```powershell
+$env:JAVA_HOME = 'C:\path\to\jdk-17-or-later'
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+mvn -v
+```
+
+## Build & Run
+
+Build the project:
+
+```powershell
 mvn clean install
 ```
 
-### Run the Application
+Run the application locally:
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 
-The application will start on **http://localhost:8080**
+The service starts on http://localhost:8080 by default.
 
 ## API Documentation
 
-Once the application is running, access the interactive API documentation:
-
-**Swagger UI:** http://localhost:8080/swagger-ui.html
-
-## Available Endpoints
-
-### Transaction Endpoints
-
-- **GET** `/transactions` - Retrieve all transactions
-- **GET** `/transactions/{id}` - Get a specific transaction by ID
-- **POST** `/transactions` - Create a new transaction
-- **PUT** `/transactions/{id}` - Update an existing transaction
-- **DELETE** `/transactions/{id}` - Delete a transaction
-
-### Categorization Endpoints
-
-- **POST** `/transactions/{transactionId}/categorize` - Categorize a specific transaction
-
-### Aggregation Endpoints
-
-- **GET** `/aggregation/summary` - Get aggregated summary of all transactions with category totals
-- **GET** `/aggregation/transactions/{customerId}` - Get all transactions for a specific customer
-
-## Database Access
-
-The application uses an H2 in-memory database. You can access the H2 Console at:
-
-**H2 Console:** http://localhost:8080/h2-console
-
-**Connection Settings:**
-- **JDBC URL:** `jdbc:h2:mem:transactions-db`
-- **Username:** `SA`
-- **Password:** (leave empty)
-
-## Project Structure
+When the app runs, the interactive Swagger UI is available at (SpringDoc):
 
 ```
-src/
-├── main/
-│   ├── java/org/example/
-│   │   ├── TransactionAggregationApi.java    # Main application class
-│   │   ├── controller/                        # REST controllers
-│   │   │   ├── AggregationController.java
-│   │   │   ├── CategorizationController.java
-│   │   │   └── TransactionController.java
-│   │   ├── datasource/                        # Mock data sources
-│   │   │   ├── MockBankSourceA.java
-│   │   │   └── MockBankSourceB.java
-│   │   ├── dto/                               # Data Transfer Objects (8 DTOs)
-│   │   │   ├── AggregatedSummaryDto.java
-│   │   │   ├── ApiResponseDto.java
-│   │   │   ├── CategorySummaryDto.java
-│   │   │   ├── CustomerSummaryDto.java
-│   │   │   ├── ErrorResponseDto.java
-│   │   │   ├── TransactionCreateDto.java
-│   │   │   ├── TransactionDto.java
-│   │   │   ├── TransactionFilterDto.java
-│   │   │   └── TransactionUpdateDto.java
-│   │   ├── exception/                         # Custom exceptions
-│   │   │   └── ResourceNotFoundException.java
-│   │   ├── mapper/                            # Entity-DTO mappers
-│   │   │   └── TransactionMapper.java
-│   │   ├── model/                             # Domain models
-│   │   │   ├── AggregatedSummary.java
-│   │   │   ├── Transaction.java
-│   │   │   └── TransactionCategory.java
-│   │   ├── repository/                        # Data repositories
-│   │   │   └── TransactionRepository.java
-│   │   ├── service/                           # Business logic
-│   │   │   ├── AggregationService.java
-│   │   │   ├── CategorizationService.java
-│   │   │   ├── TransactionService.java
-│   │   │   └── impl/                          # Service implementations
-│   │   │       ├── AggregationServiceImpl.java
-│   │   │       ├── CategorizationServiceImpl.java
-│   │   │       └── TransactionServiceImpl.java
-│   │   └── swagger/                           # Swagger configuration
-│   │       └── swaggerConfig.java
-│   └── resources/
-│       └── application.properties             # Application configuration
-└── test/                                       # Unit tests (98 tests)
-    └── java/org/example/
-        ├── controller/                        # Controller tests (17 tests)
-        │   ├── AggregationControllerTest.java
-        │   ├── CategorizationControllerTest.java
-        │   └── TransactionControllerTest.java
-        ├── model/                             # Model tests (53 tests)
-        │   ├── AggregatedSummaryTest.java
-        │   ├── TransactionCategoryTest.java
-        │   └── TransactionTest.java
-        ├── repository/                        # Repository tests (4 tests)
-        │   └── TransactionRepositoryTest.java
-        └── service/                           # Service tests (24 tests)
-            ├── AggregationServiceImplTest.java
-            ├── CategorizationServiceImplTest.java
-            └── TransactionServiceImplTest.java
+http://localhost:8080/swagger-ui/index.html
 ```
 
-## Data Transfer Objects (DTOs)
+(Older `swagger-ui.html` redirects are sometimes configured; use the `/swagger-ui/index.html` path for SpringDoc v2.)
 
-The API uses DTOs for clean separation between API layer and domain layer:
+## Endpoints (overview)
 
-### Request DTOs
-- **TransactionCreateDto** - For creating new transactions (excludes auto-generated ID)
-- **TransactionUpdateDto** - For updating existing transactions
-- **TransactionFilterDto** - For filtering transactions by multiple criteria
+Transaction endpoints
+- GET    /transactions                   — list all transactions
+- GET    /transactions/{id}              — get transaction by id
+- POST   /transactions                   — create transaction
+- PUT    /transactions/{id}              — update transaction
+- DELETE /transactions/{id}              — delete transaction
 
-### Response DTOs
-- **TransactionDto** - Standard transaction response
-- **AggregatedSummaryDto** - Aggregated summary with totals and category breakdowns
-- **CategorySummaryDto** - Category-specific statistics
-- **CustomerSummaryDto** - Customer-specific summaries with recent transactions
-- **ErrorResponseDto** - Standardized error responses
-- **ApiResponseDto<T>** - Generic wrapper for consistent API responses
+Categorization
+- POST /transactions/{transactionId}/categorize — categorize a transaction (request body: category name string)
 
-## Transaction Categories
+Aggregation
+- GET /aggregation/summary                 — aggregated totals and category breakdown
+- GET /aggregation/transactions/{customerId} — transactions for a specific customer
 
-The API supports the following transaction categories:
+## DTOs (API models)
 
-- `FOOD`
-- `TRAVEL`
-- `SHOPPING`
-- `UTILITIES`
-- `GROCERIES`
-- `ENTERTAINMENT`
-- `OTHER`
+The API surface uses DTOs (in `org.example.dto`) to separate concerns:
+- TransactionDto, TransactionCreateDto, TransactionUpdateDto, etc.
+- AggregatedSummaryDto and other response DTOs
 
-## Example Usage
+Controller tests in this project assert JSON against the DTO shapes (not internal domain entities).
 
-### Create a Transaction
+## Database (H2)
+
+The project uses an in-memory H2 database for development and tests.
+H2 console (if enabled) is typically available at:
+
+```
+http://localhost:8080/h2-console
+```
+
+Default connection used in development (see `application.properties`):
+- JDBC URL: `jdbc:h2:mem:transactions-db`
+- Username: `SA`
+- Password: (empty)
+
+## Testing
+
+This project includes unit tests for model, service, repository, and controller layers.
+
+Important testing notes:
+- Controller tests use `@WebMvcTest` and assert JSON responses using DTOs (e.g. `TransactionDto`).
+- For controller tests the security filters are disabled during tests with `@AutoConfigureMockMvc(addFilters = false)`, and security helpers (e.g. `JwtUtil`) are mocked with `@MockBean` so the Spring test context can start without real authentication.
+- ObjectMapper in tests registers Java Time modules (`objectMapper.findAndRegisterModules()`) to support `LocalDate` serialization/deserialization.
+
+Run all tests:
+
+```powershell
+mvn test
+```
+
+Run a specific test class:
+
+```powershell
+mvn -Dtest=TransactionControllerTest test
+mvn -Dtest=AggregationControllerTest test
+mvn -Dtest=CategorizationControllerTest test
+```
+
+Run groups of tests (examples):
+
+```powershell
+# controller tests only
+mvn -Dtest=*ControllerTest test
+
+# service tests only
+mvn -Dtest=*ServiceImplTest test
+```
+
+If Maven uses a different Java version than you expect, prefix the command with a `JAVA_HOME` environment override in PowerShell as shown earlier.
+
+## Development notes
+
+- Tests and controller assertions were recently migrated to validate API responses using DTOs. The tests still stub service layer behavior using domain entities (tests convert DTO → domain entity when stubbing).
+- If you add new controller tests that interact with LocalDate, register Jackson JavaTime modules in the test setup.
+
+## Example cURL requests
+
+Create a transaction:
 
 ```bash
 curl -X POST http://localhost:8080/transactions \
@@ -200,104 +179,7 @@ curl -X POST http://localhost:8080/transactions \
   }'
 ```
 
-**Response:**
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "customerId": "customer-123",
-  "amount": 150.00,
-  "description": "Grocery shopping",
-  "date": "2026-01-25",
-  "category": "GROCERIES"
-}
-```
-
-### Get All Transactions
-
-```bash
-curl http://localhost:8080/transactions
-```
-
-**Response:**
-```json
-[
-  {
-   Testing
-
-The project includes comprehensive unit tests with 98 tests covering all layers:
-
-### Test Coverage
-
-- **Model Tests** (53 tests) - Transaction, AggregatedSummary, TransactionCategory
-- **Service Tests** (24 tests) - TransactionService, AggregationService, CategorizationService
-- **Controller Tests** (17 tests) - TransactionController, AggregationController, CategorizationController
-- **Repository Tests** (4 tests) - TransactionRepository
-
-### Run All Tests
-
-```bash
-mvn test
-```
-
-### Run Specific Test Classes
-
-```bash
-# Run controller tests only
-mvn test -Dtest=*ControllerTest
-
-# Run service tests only
-mvn test -Dtest=*ServiceImplTest
-
-# Run model tests only
-mvn test -Dtest=TransactionTest,AggregatedSummaryTest,TransactionCategoryTest
-```
-
-### Test Results
-
-All 98 tests pass successfully:
-- ✅ **0 Failures**
-- ✅ **0 Errors**
-- ✅ **0 Skipped** "date": "2026-01-25",
-    "category": "GROCERIES"
-  },
-  {
-    "id": "2",
-    "customerId": "customer-456",
-    "amount": 75.50,
-    "description": "Restaurant",
-    "date": "2026-01-24",
-    "category": "FOOD"
-  }
-]
-```
-
-### Get Transaction by ID
-
-```bash
-curl http://localhost:8080/transactions/1
-```
-
-### Update a Transaction
-
-```bash
-curl -X PUT http://localhost:8080/transactions/1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customerId": "customer-123",
-    "amount": 175.00,
-    "description": "Updated Grocery shopping",
-    "date": "2026-01-25",
-    "category": "GROCERIES"
-  }'
-```
-
-### Delete a Transaction
-
-```bash
-curl -X DELETE http://localhost:8080/transactions/1
-```
-
-### Categorize a Transaction
+Categorize a transaction (body is a JSON string with the category name):
 
 ```bash
 curl -X POST http://localhost:8080/transactions/1/categorize \
@@ -305,123 +187,28 @@ curl -X POST http://localhost:8080/transactions/1/categorize \
   -d '"FOOD"'
 ```
 
-### Get Aggregated Summary
+Get aggregated summary:
 
 ```bash
 curl http://localhost:8080/aggregation/summary
 ```
 
-**Response:**
-```json
-{
-  "total": 225.50,
-### Create Production Build
-
-```bash
-mvn clean package
-```
-
-### Run Production Build
-
-```bash
-java -jar target/transaction-aggregation-api-0.0.1-SNAPSHOT.jar
-```
-
-### Build with Tests Skipped
-
-```bash
-mvn clean package -DskipTests
-```
-
-## Error Handling
-
-The API includes proper error handling for common scenarios:
-
-- **404 Not Found** - When a transaction ID doesn't exist
-- **400 Bad Request** - When request data is invalid
-- **500 Internal Server Error** - For unexpected server errors
-
-## Development
-
-### Code Quality
-
-- Uses Lombok to reduce boilerplate code
-- Follows Spring Boot best practices
-- Implements proper separation of concerns (Controller → Service → Repository)
-- Uses DTOs for data transfer
-- Includes comprehensive exception handling
-
-### Testing Strategy
-
-- **Unit Tests** - Test individual components in isolation
-- **Integration Tests** - Test repository layer with H2 database
-- **MockMvc Tests** - Test REST endpoints without starting the server
-- **Mockito** - Mock dependencies for isolated testing
-
-## Future Enhancements
-
-Potential improvements for the API:
-
-- [ ] Add authentication and authorization (Spring Security)
-- [ ] Implement pagination for transaction lists
-- [ ] Add filtering and search capabilities
-- [ ] Support for multiple currencies
-- [ ] Transaction export to CSV/PDF
-- [ ] Real-time notifications for large transactions
-- [ ] Analytics dashboard
-- [ ] Integration with real banking APIs
-
 ## Troubleshooting
 
-### Application won't start
-- Verify Java 21 is installed: `java -version`
-- Check if port 8080 is available
-- Ensure Maven dependencies are downloaded: `mvn clean install`
+- Build failures related to Java version: ensure `JAVA_HOME` points to a Java 17+ JDK (project compiles with `--release 17`).
+- Controller tests failing to start Spring context with security beans: ensure controller tests disable filters and mock `JwtUtil` as in the project tests.
+- Date parsing/serialization errors: register Java Time modules on the test ObjectMapper.
 
-### Tests failing
-- Clean and rebuild: `mvn clean test`
-- Verify Java 21 is being used
-- Check for proper test annotations
+## Contribution & Next steps
 
-## Support
+- Consider adding pagination, filtering/search, and multi-currency support.
+- Switch controller endpoints to accept/return DTOs explicitly (if not already) and centralize mapping in `TransactionMapper`.
+- Add integration tests that exercise real security flows (authentication + authorization).
 
-For issues or questions, please create an issue in the repository.
+## License & Author
 
-## License
+This project is provided for demonstration and educational purposes.
 
-This project is available for educational and demonstration purposes.
+---
 
-## Author
-
-Created as a demonstration of Spring Boot REST API development with comprehensive testing
-
-## Configuration
-
-The application configuration can be found in `src/main/resources/application.properties`.
-
-Default settings:
-- Server port: `8080`
-- Database: H2 in-memory
-- JPA: Auto DDL creation enabled
-- H2 Console: Enabled
-
-## Running Tests
-
-```bash
-mvn test
-```
-
-## Building for Production
-
-```bash
-mvn clean package
-java -jar target/transaction-aggregation-api-0.0.1-SNAPSHOT.jar
-```
-
-## License
-
-This project is available for educational and demonstration purposes.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+If you'd like, I can also: add a short CONTRIBUTING.md, add a Maven toolchains configuration to make selecting a JDK easier, or add a small README section showing how to run a single test method from PowerShell; tell me which you'd prefer.
