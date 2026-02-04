@@ -210,5 +210,3 @@ curl http://localhost:8080/aggregation/summary
 This project is provided for demonstration and educational purposes.
 
 ---
-
-If you'd like, I can also: add a short CONTRIBUTING.md, add a Maven toolchains configuration to make selecting a JDK easier, or add a small README section showing how to run a single test method from PowerShell; tell me which you'd prefer.
