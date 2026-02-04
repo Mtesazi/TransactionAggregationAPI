@@ -1,14 +1,17 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dto.TransactionDto;
 import org.example.exception.ResourceNotFoundException;
 import org.example.model.Transaction;
 import org.example.model.TransactionCategory;
+import org.example.security.JwtUtil;
 import org.example.service.CategorizationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(CategorizationController.class)
 class CategorizationControllerTest {
 
@@ -31,20 +35,39 @@ class CategorizationControllerTest {
     @MockBean
     private CategorizationService categorizationService;
 
+    // Mock JwtUtil so security-related beans can be created during the test context load
+    @MockBean
+    private JwtUtil jwtUtil;
+
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Transaction mockTransaction;
+    private TransactionDto mockTransactionDto;
 
     @BeforeEach
     void setUp() {
-        mockTransaction = new Transaction(
+        // Ensure ObjectMapper handles Java 8 date/time types
+        objectMapper.findAndRegisterModules();
+
+        mockTransactionDto = new TransactionDto(
                 "1",
                 "customer-123",
                 "Grocery Store",
                 new BigDecimal("50.00"),
                 LocalDate.of(2024, 1, 15),
-                TransactionCategory.GROCERIES
+                "GROCERIES"
+        );
+    }
+
+    // Helper to convert DTO -> domain Transaction
+    private Transaction toEntity(TransactionDto dto) {
+        return new Transaction(
+                dto.getId(),
+                dto.getCustomerId(),
+                dto.getDescription(),
+                dto.getAmount(),
+                dto.getDate(),
+                TransactionCategory.valueOf(dto.getCategory())
         );
     }
 
@@ -53,29 +76,30 @@ class CategorizationControllerTest {
         // Given
         String transactionId = "1";
         TransactionCategory newCategory = TransactionCategory.FOOD;
-        Transaction categorizedTransaction = new Transaction(
+
+        TransactionDto categorizedDto = new TransactionDto(
                 "1",
                 "customer-123",
                 "Grocery Store",
                 new BigDecimal("50.00"),
                 LocalDate.of(2024, 1, 15),
-                newCategory
+                "FOOD"
         );
 
         when(categorizationService.categorizeTransactionById(eq(transactionId), eq(newCategory)))
-                .thenReturn(Optional.of(categorizedTransaction));
+                .thenReturn(Optional.of(toEntity(categorizedDto)));
 
         // When & Then
         mockMvc.perform(post("/transactions/{transactionId}/categorize", transactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCategory)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.id", is("1")))
-                .andExpect(jsonPath("$.customerId", is("customer-123")))
-                .andExpect(jsonPath("$.description", is("Grocery Store")))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is(categorizedDto.getId())))
+                .andExpect(jsonPath("$.customerId", is(categorizedDto.getCustomerId())))
+                .andExpect(jsonPath("$.description", is(categorizedDto.getDescription())))
                 .andExpect(jsonPath("$.amount", is(50.00)))
-                .andExpect(jsonPath("$.category", is("FOOD")));
+                .andExpect(jsonPath("$.category", is(categorizedDto.getCategory())));
     }
 
     @Test
@@ -99,25 +123,26 @@ class CategorizationControllerTest {
         // Given
         String transactionId = "1";
         TransactionCategory newCategory = TransactionCategory.ENTERTAINMENT;
-        Transaction categorizedTransaction = new Transaction(
+
+        TransactionDto categorizedDto = new TransactionDto(
                 "1",
                 "customer-123",
                 "Movie Theater",
                 new BigDecimal("25.00"),
                 LocalDate.of(2024, 1, 15),
-                newCategory
+                "ENTERTAINMENT"
         );
 
         when(categorizationService.categorizeTransactionById(eq(transactionId), eq(newCategory)))
-                .thenReturn(Optional.of(categorizedTransaction));
+                .thenReturn(Optional.of(toEntity(categorizedDto)));
 
         // When & Then
         mockMvc.perform(post("/transactions/{transactionId}/categorize", transactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCategory)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.category", is("ENTERTAINMENT")));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.category", is(categorizedDto.getCategory())));
     }
 
     @Test
@@ -125,24 +150,25 @@ class CategorizationControllerTest {
         // Given
         String transactionId = "1";
         TransactionCategory newCategory = TransactionCategory.UTILITIES;
-        Transaction categorizedTransaction = new Transaction(
+
+        TransactionDto categorizedDto = new TransactionDto(
                 "1",
                 "customer-123",
                 "Electric Bill",
                 new BigDecimal("100.00"),
                 LocalDate.of(2024, 1, 15),
-                newCategory
+                "UTILITIES"
         );
 
         when(categorizationService.categorizeTransactionById(eq(transactionId), eq(newCategory)))
-                .thenReturn(Optional.of(categorizedTransaction));
+                .thenReturn(Optional.of(toEntity(categorizedDto)));
 
         // When & Then
         mockMvc.perform(post("/transactions/{transactionId}/categorize", transactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCategory)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.category", is("UTILITIES")));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.category", is(categorizedDto.getCategory())));
     }
 }
