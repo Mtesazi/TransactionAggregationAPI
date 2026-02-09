@@ -5,7 +5,6 @@ import org.example.dto.TransactionDto;
 import org.example.exception.ResourceNotFoundException;
 import org.example.model.Transaction;
 import org.example.model.TransactionCategory;
-import org.example.security.JwtUtil;
 import org.example.service.TransactionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,9 +37,7 @@ class TransactionControllerTest {
     @MockBean
     private TransactionService transactionService;
 
-    // Mock JwtUtil so security-related beans can be created during the test context load
-    @MockBean
-    private JwtUtil jwtUtil;
+
 
     @Autowired
     private ObjectMapper objectMapper;
