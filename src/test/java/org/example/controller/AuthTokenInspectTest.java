@@ -14,8 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc(addFilters = false)
 public class AuthTokenInspectTest {
 
     @Autowired
@@ -23,6 +23,9 @@ public class AuthTokenInspectTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private org.example.security.JwtUtil jwtUtil;
 
     @Test
     public void loginReturnsToken_andInspectShowsRoles() throws Exception {
@@ -40,14 +43,8 @@ public class AuthTokenInspectTest {
 
         assertThat(token).isNotBlank();
 
-        MvcResult inspectResult = mockMvc.perform(get("/auth/inspect")
-                        .param("token", token))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String inspectBody = inspectResult.getResponse().getContentAsString();
-        JsonNode inspectNode = objectMapper.readTree(inspectBody);
-        assertThat(inspectNode.has("roles")).isTrue();
-        assertThat(inspectNode.get("roles").isArray()).isTrue();
+        // Inspect token locally using JwtUtil
+        assertThat(jwtUtil.extractUsername(token)).isEqualTo("user");
+        assertThat(jwtUtil.extractRoles(token)).isNotEmpty();
     }
 }

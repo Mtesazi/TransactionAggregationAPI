@@ -37,7 +37,8 @@ class TransactionControllerTest {
     @MockBean
     private TransactionService transactionService;
 
-
+    @MockBean
+    private org.example.security.JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -106,7 +107,7 @@ class TransactionControllerTest {
     @Test
     void getAllTransactions_WithNoTransactions_ShouldReturnEmptyList() throws Exception {
         // Given
-        when(transactionService.getAllTransactions()).thenReturn(Arrays.asList());
+        when(transactionService.getAllTransactions()).thenReturn(List.of());
 
         // When & Then
         mockMvc.perform(get("/transactions"))

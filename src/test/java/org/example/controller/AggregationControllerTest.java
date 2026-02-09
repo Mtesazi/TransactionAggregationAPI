@@ -38,7 +38,7 @@ class AggregationControllerTest {
 
     // Mock JwtUtil so security-related beans can be created during the test context load
     @MockBean
-
+    private org.example.security.JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -118,7 +118,7 @@ class AggregationControllerTest {
     void getTransactionsByCustomer_WithNoTransactions_ShouldReturnEmptyList() throws Exception {
         // Given
         String customerId = "customer-999";
-        when(aggregationService.aggregateTransactions(customerId)).thenReturn(Arrays.asList());
+        when(aggregationService.aggregateTransactions(customerId)).thenReturn(List.of());
 
         // When & Then
         mockMvc.perform(get("/aggregation/transactions/{customerId}", customerId))

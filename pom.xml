@@ -100,7 +100,9 @@
         </dependency>
     </dependencies>
     <properties>
-        <maven.compiler.release>17</maven.compiler.release>
+        <!-- Target Java version; prefer running with a JDK 17 in the environment. -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <build>
@@ -110,7 +112,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>17</release>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
         </plugins>

@@ -2,7 +2,6 @@ package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dto.TransactionDto;
-import org.example.exception.ResourceNotFoundException;
 import org.example.model.Transaction;
 import org.example.model.TransactionCategory;
 import org.example.service.CategorizationService;
@@ -34,6 +33,8 @@ class CategorizationControllerTest {
     @MockBean
     private CategorizationService categorizationService;
 
+    @MockBean
+    private org.example.security.JwtUtil jwtUtil;
 
 
     @Autowired
